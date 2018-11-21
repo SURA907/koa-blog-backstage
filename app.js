@@ -1,10 +1,10 @@
 const Koa = require('koa')
-
 const app = new Koa()
 
-app.use( async (ctx, next) => {
-    ctx.body = 'hello, world'
+// test
+app.use( async (ctx) => {
+  ctx.body = 'hello, world'
 })
 
-// 端口监听
-app.listen(8080)
+// 暴露Koa
+module.exports = app.callback()
