@@ -1,0 +1,22 @@
+{
+  "name": "koa-blog-backstage",
+  "version": "1.0.0",
+  "description": "> 毕业设计打算做一个前后端分离的论坛</br>\r > 这个仓库放后端部分</br>\r > readme暂时占坑，日后追加内容\r ### 以上，合掌",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SURA907/koa-blog-backstage.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SURA907/koa-blog-backstage/issues"
+  },
+  "homepage": "https://github.com/SURA907/koa-blog-backstage#readme",
+  "dependencies": {
+    "koa": "^2.6.2"
+  }
+}
