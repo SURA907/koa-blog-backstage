@@ -4,9 +4,12 @@
 // 引入框架及中间件
 const Koa = require('koa')
 const router = require('koa-router')()
+const bodyParser = require('koa-bodyparser')
 
-// 引入子路由模块
+// 自定义模块
 const ownRoutes = require('./routes/index')
+const errorHandle = require('./tools/errorHandle')
+
 
 // 实例化Koa
 const app = new Koa()
@@ -16,6 +19,8 @@ router.use(ownRoutes)
 
 // 装载中间件
 app
+  .use(errorHandle)
+  .use(bodyParser())
   .use(router.routes())
   .use(router.allowedMethods())
 
