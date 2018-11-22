@@ -8,7 +8,7 @@ const router = require('koa-router')()
 // 引入子路由模块
 const ownRoutes = require('./routes/index')
 
-
+// 实例化Koa
 const app = new Koa()
 
 // 使用路由分割用户请求
