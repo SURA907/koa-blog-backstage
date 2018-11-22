@@ -4,8 +4,9 @@
  */
 const router = require('koa-router')()
 
+// test
 router.get('/', (ctx) => {
-  ctx.body = 'index test'
+  ctx.response.body = 'index test'
 })
 
 module.exports = router.routes()
