@@ -19,10 +19,10 @@ router.use(ownRoutes)
 
 // 装载中间件
 app
-  .use(errorHandle)
   .use(bodyParser())
   .use(router.routes())
   .use(router.allowedMethods())
+  .use(errorHandle)
 
 // 暴露Koa实例
 module.exports = app.callback()
