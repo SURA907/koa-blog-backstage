@@ -1,3 +1,7 @@
+/**
+ * 封装koa及其中间件供server使用
+ */
+
 const Koa = require('koa')
 const app = new Koa()
 

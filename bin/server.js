@@ -1,3 +1,11 @@
+/**
+ * server配置
+ * 此处创建http和https server
+ * 接收外部web框架模块处理用户请求
+ * 
+ * ps：使用http2创建https server
+ */
+
 const http = require('http')
 const https = require('http2')
 const fs = require('fs')
