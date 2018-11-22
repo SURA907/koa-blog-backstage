@@ -5,12 +5,16 @@
  * 
  * ps：使用http2创建https server
  */
-
+// 引入内置模块
 const http = require('http')
 const https = require('http2')
 const fs = require('fs')
 
+// 引入外部自定义模块
 const app = require('./../app')
+const HTTP_PORT = require('./../config').HTTP_PORT
+const HTTPS_PORT = require('./../config').HTTPS_PORT
+
 
 // 创建 http server
 const httpServer = http.createServer(app)
@@ -24,5 +28,5 @@ const httpServer = http.createServer(app)
 // 创建 https server
 // const httpsServer = https.createSecureServer(httpsOption, app)
 
-httpServer.listen(8080)
-// httpsServer.listen(443)
+httpServer.listen(HTTP_PORT)
+// httpsServer.listen(HTTPS_PORT)
