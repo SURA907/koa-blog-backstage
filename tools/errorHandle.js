@@ -8,6 +8,7 @@
 function errorHandle(ctx, next) {
   return next().catch(error => {
     switch (error.status) {
+      
       case 401: {
         ctx.status = 401
         ctx.body = {
@@ -16,6 +17,7 @@ function errorHandle(ctx, next) {
           message: 'you do not have access'
         }
       } break
+
       case 404: {
         ctx.status = 404
         ctx.body = {
@@ -24,6 +26,7 @@ function errorHandle(ctx, next) {
           message: 'not found'
         }
       } break
+
       case 500: {
         ctx.status = 500
         ctx.body = {
@@ -32,9 +35,11 @@ function errorHandle(ctx, next) {
           message: 'server error'
         }
       } break
+
       default: {
         throw error
       } break
+
     }
   })
 }
