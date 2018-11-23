@@ -1,9 +1,10 @@
 /**
  * 统一捕获和处理http错误
- *  401: 没有权限
+ *  401: 权限不足
  *  404: 请求资源不存在
  *  500: 服务器错误
  */
+
 function errorHandle(ctx, next) {
   return next().catch(error => {
     switch (error.status) {
@@ -30,6 +31,9 @@ function errorHandle(ctx, next) {
           status: 500,
           message: 'server error'
         }
+      } break
+      default: {
+        throw error
       } break
     }
   })
