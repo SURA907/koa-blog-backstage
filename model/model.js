@@ -20,6 +20,14 @@ conn.on('connected', () => {
   console.log('database connection succeeded')
 })
 
+/**
+ * username:    用户名
+ * password:    密码
+ * avatar:      头像
+ * mail:        邮件地址
+ * user_type:   用户类型
+ * is_delete:   用户是否删除
+ */
 // 定义Schema: userSchema
 const userSchema = new mongoose.Schema({
   username: {type: String},
@@ -32,15 +40,25 @@ const userSchema = new mongoose.Schema({
 // 装载model: users
 const userModel = mongoose.model('users', userSchema)
 
-
-// 定义Schema: articleSchema
+/**
+ * article_title:             文章标题
+ * article_description:       文章描述
+ * article_content:           文章原文
+ * article_release_time:      文章发布时间
+ * article_last_updata_tiem:  文章最后修改时间
+ * article_author_id:         文章作者id
+ * article_author:            文章作者用户名
+ * is_delete:                 文章是否被删除
+ */
+// 定义Schema: articles
 const articleSchema = new mongoose.Schema({
   article_title: {type: String},
+  article_description: {type: String},
   article_content: {type: String},
   article_release_time: {type: Number},
   article_last_updata_tiem: {type: Number},
-  article_author: {type: String},
   article_author_id: {type: String},
+  article_author: {type: String},
   is_delete: {type: String, march: /(^YES$|^NO$)/, default: 'NO'}
 })
 const articleModel = mongoose.model('articles', articleSchema)
