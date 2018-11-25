@@ -14,15 +14,15 @@ const fs = require('fs')
 const app = require('./../app')
 const HTTP_PORT = require('./../config').HTTP_PORT
 const HTTPS_PORT = require('./../config').HTTPS_PORT
-
+const CA_CERT = require('./../config').CA_CERT
 
 // 创建 http server
 const httpServer = http.createServer(app)
 
-// https server 配置
+// https server 配置（CA证书）
 // const httpsOption = {
-//   key: fs.readFileSync(''),
-//   cert: fs.readFileSync('')
+//   key: fs.readFileSync(CA_CERT.KEY),
+//   cert: fs.readFileSync(CA_CERT.CERT)
 // }
 
 // 创建 https server
