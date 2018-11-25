@@ -9,6 +9,6 @@ const index = require('./default/index')
 
 
 // 转载子路由
-router.use('/', index)
+router.use('/index', index)
 
 module.exports = router.routes()
