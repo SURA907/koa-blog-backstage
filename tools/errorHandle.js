@@ -36,6 +36,15 @@ function errorHandle(ctx, next) {
         }
       } break
 
+      case 400: {
+        ctx.status = 400
+        ctx.body = {
+          code: 1,
+          status: 400,
+          message: 'bad request, check args please'
+        }
+      } break
+
       default: {
         throw error
       } break
