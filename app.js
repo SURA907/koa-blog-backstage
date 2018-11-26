@@ -5,6 +5,7 @@
 const Koa = require('koa')
 const router = require('koa-router')()
 const bodyParser = require('koa-bodyparser')
+const helmet = require('koa-helmet')
 
 // 自定义模块
 const ownRoutes = require('./routes/index')
@@ -19,6 +20,7 @@ router.use(ownRoutes)
 
 // 装载中间件
 app
+  .use(helmet())
   .use(errorHandle)
   .use(bodyParser())
   .use(router.routes())
