@@ -40,7 +40,7 @@ router.get('/', async (ctx) => {
     article_last_updata_tiem: 1,
     article_author_id: 1,
     article_author: 1,
-  }).sort({article_release_time: 1}).limit(6).skip(6*ctx.getPage)
+  }).sort({article_release_time: -1}).limit(6).skip(6*ctx.getPage)
 
   ctx.body = {
     code: 0,
