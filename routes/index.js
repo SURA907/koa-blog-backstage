@@ -8,11 +8,9 @@ const router = require('koa-router')()
 const home = require('./../controller/home')
 
 
-/**
- * 路由
- */
 // 首页数据请求
 router
   .get('/index', home.index)
+
 
 module.exports = router.routes()
