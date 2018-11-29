@@ -4,11 +4,15 @@
  */
 const router = require('koa-router')()
 
-// 引入子路由
-const index = require('./default/index')
+// 引入controller
+const home = require('./../controller/home')
 
 
-// 转载子路由
-router.use('/index', index)
+/**
+ * 路由
+ */
+// 首页数据请求
+router
+  .get('/index', home.index)
 
 module.exports = router.routes()
