@@ -8,53 +8,55 @@
  * ps: 目前看来，使用这种方式只能捕获主动抛出的http error (如: ctx.throw(400))
  *  错误处理还需要之后进一步研究
  */
+class errorHander {
+  static async errorHandle(ctx, next) {
+    try {
+      await next()
+    } catch(errpr) {
+      switch (errpr.status) {
 
-function errorHandle(ctx, next) {
-  return next().catch(error => {
-    switch (error.status) {
-      
-      case 401: {
-        ctx.status = 401
-        ctx.body = {
-          code: 1,
-          status: 401,
-          message: 'you do not have access'
-        }
-      } break
-
-      case 404: {
-        ctx.status = 404
-        ctx.body = {
-          code: 1,
-          status: 404,
-          message: 'not found'
-        }
-      } break
-
-      case 500: {
-        ctx.status = 500
-        ctx.body = {
-          code: 1,
-          status: 500,
-          message: 'server error'
-        }
-      } break
-
-      case 400: {
-        ctx.status = 400
-        ctx.body = {
-          code: 1,
-          status: 400,
-          message: 'bad request, check args please'
-        }
-      } break
-
-      default: {
-        throw error
-      } break
-
+        case 401: {
+          ctx.status = 401
+          ctx.body = {
+            code: 1,
+            status: 401,
+            message: 'you do not have access'
+          }
+        } break
+  
+        case 404: {
+          ctx.status = 404
+          ctx.body = {
+            code: 1,
+            status: 404,
+            message: 'not found'
+          }
+        } break
+  
+        case 500: {
+          ctx.status = 500
+          ctx.body = {
+            code: 1,
+            status: 500,
+            message: 'server error'
+          }
+        } break
+  
+        case 400: {
+          ctx.status = 400
+          ctx.body = {
+            code: 1,
+            status: 400,
+            message: 'bad request, check args please'
+          }
+        } break
+  
+        default: {
+          throw error
+        } break
+      }
     }
-  })
+  }
 }
 
-module.exports = errorHandle
+module.exports = errorHander.errorHandle
