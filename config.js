@@ -6,7 +6,16 @@
  *  CA_CERT: https使用的ca证书
  */
 const configs = {
-  DB: 'mongodb://localhost/test',
+  DB: {
+    client: 'mongodb',
+    connection: {
+      host: 'localhost',
+      port: '27017',
+      name: 'test',
+      username: '',
+      password: '',
+    }
+  },
   HTTP_PORT: 8080,
   HTTPS_PORT: 443,
   CA_CERT: {

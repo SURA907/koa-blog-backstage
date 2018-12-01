@@ -8,9 +8,16 @@ const mongoose = require('mongoose')
 // 引入mongodb配置
 const DB_CONFIG = require('./../config').DB
 
+// 初始化mongodb连接url
+let CONFIG_URL = ''
+if (DB_CONFIG.connection.username) {
+  CONFIG_URL = `${DB_CONFIG.client}://${DB_CONFIG.connection.username}:${DB_CONFIG.connection.password}@${DB_CONFIG.connection.host}:${DB_CONFIG.connection.port}/${DB_CONFIG.connection.name}`
+} else {
+  CONFIG_URL = `${DB_CONFIG.client}://${DB_CONFIG.connection.host}:${DB_CONFIG.connection.port}/${DB_CONFIG.connection.name}`
+}
 
 // mongodb配置
-mongoose.connect(DB_CONFIG)
+mongoose.connect(CONFIG_URL, {useNewUrlParser: true})
 
 // 建立数据库连接
 const conn = mongoose.connection
