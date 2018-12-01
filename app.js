@@ -10,6 +10,7 @@ const helmet = require('koa-helmet')
 // 自定义模块
 const ownRoutes = require('./routes/index')
 const errorHandle = require('./tools/errorHandle')
+const logHanele = require('./tools/log')
 
 
 // 实例化Koa
@@ -22,6 +23,7 @@ router.use(ownRoutes)
 app
   .use(helmet())
   .use(errorHandle)
+  .use(logHanele)
   .use(bodyParser())
   .use(router.routes())
   .use(router.allowedMethods())
