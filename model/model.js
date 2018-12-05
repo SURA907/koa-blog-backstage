@@ -52,7 +52,7 @@ const userModel = mongoose.model('users', userSchema)
  * article_description:       文章描述
  * article_content:           文章原文
  * article_release_time:      文章发布时间
- * article_last_updata_tiem:  文章最后修改时间
+ * article_last_update_time:  文章最后修改时间
  * article_author_id:         文章作者id
  * article_author:            文章作者用户名
  * is_delete:                 文章是否被删除
@@ -63,7 +63,7 @@ const articleSchema = new mongoose.Schema({
   article_description: {type: String},
   article_content: {type: String},
   article_release_time: {type: Number},
-  article_last_updata_tiem: {type: Number},
+  article_last_update_time: {type: Number},
   article_author_id: {type: String},
   article_author: {type: String},
   is_delete: {type: String, march: /(^YES$|^NO$)/, default: 'NO'}
