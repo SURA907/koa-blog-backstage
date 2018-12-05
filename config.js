@@ -16,7 +16,7 @@ const configs = {
       password: '',
     }
   },
-  HTTP_PORT: 8080,
+  HTTP_PORT: 8081,
   HTTPS_PORT: 443,
   CA_CERT: {
     KEY: '',
