@@ -11,6 +11,7 @@ const helmet = require('koa-helmet')
 const ownRoutes = require('./routes/index')
 const errorHandle = require('./tools/errorHandle')
 const logHanele = require('./tools/log')
+const resourseSharing = require('./tools/resourseSharing')
 
 
 // 实例化Koa
@@ -21,8 +22,9 @@ router.use(ownRoutes)
 
 // 装载中间件
 app
-  .use(helmet())
   .use(errorHandle)
+  .use(resourseSharing)
+  .use(helmet())
   .use(logHanele)
   .use(bodyParser())
   .use(router.routes())
