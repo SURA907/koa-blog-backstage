@@ -1,9 +1,10 @@
 /**
  * 集中管理一些配置
  *  DB: mongodb数据库
+ *  REDIS: redis数据库
  *  HTTP_PORT: http端口
  *  HTTPS_PORT: https端口
- *  CA_CERT: https使用的ca证书
+ *  CA_CERT: https使用的ca证书位置
  */
 const configs = {
   DB: {
@@ -15,6 +16,12 @@ const configs = {
       username: '',
       password: '',
     }
+  },
+  REDIS: {
+    host: 'localhost',
+    port: '6379',
+    db: 0,
+    // password: ''
   },
   HTTP_PORT: 8081,
   HTTPS_PORT: 443,
