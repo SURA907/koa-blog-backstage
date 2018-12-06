@@ -10,7 +10,7 @@ class HomeController {
   static async index(ctx, next) {
     // 检查参数
     if (ctx.query.time < 0 || ctx.query.page < 0) {
-      ctx.throw(400)
+      ctx.throw(400, 'parameters are not allowed')
     } else {
       // 检索数据库
       let index_data = await articlesModel.find({
@@ -30,8 +30,8 @@ class HomeController {
       ctx.body = {
         code: 0,
         status: 200,
-        message: 'completed',
-        data: index_data
+        message: 'complete',
+        data_items: index_data
       }
     }
   }
