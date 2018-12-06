@@ -12,15 +12,15 @@ class errorHander {
   static async errorHandle(ctx, next) {
     try {
       await next()
-    } catch(errpr) {
-      switch (errpr.status) {
+    } catch(error) {
+      switch (error.status) {
 
         case 401: {
           ctx.status = 401
           ctx.body = {
             code: 1,
             status: 401,
-            message: 'you do not have access'
+            message: error.message || 'you do not have access'
           }
         } break
   
@@ -29,7 +29,7 @@ class errorHander {
           ctx.body = {
             code: 1,
             status: 404,
-            message: 'not found'
+            message: error.message || 'not found'
           }
         } break
   
@@ -38,7 +38,7 @@ class errorHander {
           ctx.body = {
             code: 1,
             status: 500,
-            message: 'server error'
+            message: error.message || 'server error'
           }
         } break
   
@@ -47,7 +47,7 @@ class errorHander {
           ctx.body = {
             code: 1,
             status: 400,
-            message: 'bad request, check args please'
+            message: error.message || 'bad request, check args please'
           }
         } break
   
