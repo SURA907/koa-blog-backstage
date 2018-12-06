@@ -18,10 +18,12 @@
   },
   "homepage": "https://github.com/SURA907/koa-blog-backstage#readme",
   "dependencies": {
+    "bluebird": "^3.5.3",
     "koa": "^2.6.2",
     "koa-bodyparser": "^4.2.1",
     "koa-helmet": "^4.0.0",
     "koa-router": "^7.4.0",
-    "mongoose": "^5.3.13"
+    "mongoose": "^5.3.13",
+    "redis": "^2.8.0"
   }
 }
