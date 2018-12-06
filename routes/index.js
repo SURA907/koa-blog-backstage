@@ -6,11 +6,12 @@ const router = require('koa-router')()
 
 // 引入controller
 const home = require('./../controller/home')
+const articles = require('./../controller/article')
 
 
-// 首页数据请求
-router
-  .get('/index', home.index)
+// reast api
+router.get('/index', home.index)
+router.get('/articles/:id', articles.find)
 
 
 module.exports = router.routes()
