@@ -1,9 +1,9 @@
 /**
  * 设置允许跨域
  */
-class resourseSharing {
+const resourseSharing = {
   
-  static async sharing (ctx, next) {
+  async sharing (ctx, next) {
     // console.log(ctx.request.headers)
 
     // 允许跨域访问的域名

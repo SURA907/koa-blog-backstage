@@ -8,8 +8,8 @@
  * ps: 目前看来，使用这种方式只能捕获主动抛出的http error (如: ctx.throw(400))
  *  错误处理还需要之后进一步研究
  */
-class errorHander {
-  static async errorHandle(ctx, next) {
+const errorHander = {
+  async errorHandle(ctx, next) {
     try {
       await next()
     } catch(error) {
