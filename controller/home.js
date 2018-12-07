@@ -4,10 +4,10 @@
  */
 const articlesModel = require('./../model/model').getModel('articles')
 
-class HomeController {
+const HomeController = {
 
   // 首页参数的请求
-  static async index(ctx, next) {
+  async index(ctx, next) {
     // 检查参数
     if (ctx.query.time < 0 || ctx.query.page < 0) {
       ctx.throw(400, 'parameters are not allowed')

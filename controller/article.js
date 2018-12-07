@@ -3,11 +3,19 @@
  *  处理articles相关请求
  */
 const findArticle = require('./../tools/findArticle')
-class articles {
+const articles = {
   // 根据文章id返回文章数据
-  static async find (ctx, next) {
-    await findArticle.main(ctx, next)
+  async find (ctx, next) {
+    let id = ctx.params.id
+    // 检查参数
+    if (id.length && id.length === 24) {
+      // 参数合法
+      await findArticle(ctx, next)
+    } else {
+      ctx.throw(400, 'bad request, check args please')
+    }
   }
+  
 }
 
 module.exports = articles
