@@ -9,147 +9,126 @@ const articles = require('./../model/model').getModel('articles')
 const redis = require('redis')
 const bluebird = require('bluebird')
 const REDIS_CONF = require('./../config').REDIS
+
+
 // 使用bluebird使redis操作转为Promises
 bluebird.promisifyAll(redis.RedisClient.prototype)
 bluebird.promisifyAll(redis.Multi.prototype)
 
 // 创建redis客户端
-const redis_clent = redis.createClient(REDIS_CONF)
+const redis_client = redis.createClient(REDIS_CONF)
 
-class findArticle {
-  
-  // 在redis中寻找文章
-  static async first_find (key) {
-    let data = await redis_clent.getAsync(key)
-    if (data === null) {
-      // 文章数据不存在
-      return {load_status: undefined}
-    } else {
-      // 文章存在，或已有线程去数据库获取数据
-      return JSON.parse(data)
-    }
-  }
-  
-  // 查询数据库
-  static async query_db (article_id) {
-    let data = await articles.findById(article_id)
-    return data
-  }
-  
-  // redis上锁
-  static async redis_lock (key) {
-    // 格式化用于上锁的key，value
-    // 生成随机数作为标识符，防止解开不属于自己的锁
-    let query_id = Math.random()
-    let value = JSON.stringify({
-      load_status: 'QUERY',
-      query_id: query_id
-    })
-    
-    // 上锁（过期时间200毫秒）
-    let res = await redis_clent.setAsync(key, value, 'NX', 'PX', 200)
-    
-    // 判断上锁是否成功
-    if (res === 'OK') {
-      // 上锁成功，需要返回用于解锁的query_id
-      return {status: 'completed', query_id: query_id}
-    } else {
-      // 上锁失败
-      return {status: 'failured'}
-    }
-  }
-  
-  // redis解锁，同时刷新缓存
-  static async redis_unlock (key, query_id, data) {
-    // 获得锁
-    let res = await redis_clent.getAsync(key)
-    // 检查锁
-    if (res === null) {
-      // 锁不存在
-      // 锁不存在可能是锁过期，或文章内容出现了更新
-      // 直接返回锁正常解除，但不刷新缓存
-      return true
-    } else {
-      res = JSON.parse(res)
-      // 锁存在
-      // 检查锁的状态
-      if (res.load_status === 'QUERY' && res.query_id === query_id) {
-        // 锁属于自己
-        let value = JSON.stringify({
-          load_status: 'COMPLETE',
-          data: data
-        })
-        // 解除锁并将数据放入缓存（缓存过期时间五分钟）
-        let result = await redis_clent.setAsync(key, value, 'PX', 300000)
-        return result === 'OK'
-      } else {
-        // 锁不属于自己
-        //  1、自己的锁已过期，当前另一线程在检索数据库
-        //  2、自己的锁已过期，另一线程已完成对缓存的刷新
-        // 直接返回锁正常解除，但不刷新缓存
-        return true
-      }
-    }
-  }
-  
-  // 入口
-  static async main (ctx, next) {
-    try {
-      let article_id = ctx.params.id
-      // 检查参数
-      if (article_id.length && article_id.length !== 24) {
-        throw(400, 'bad request, check args please')
-      }
-      let key = 'article-'+article_id
-      // 查询缓存
-      let eRedis = await this.first_find(key)
-      // 查看数据状态
-      if (eRedis.load_status !== undefined) {
-        // 缓存中有数据
-        if (eRedis.load_status === 'QUERY') {
-          // 有线程正在检索数据库，延时自旋
-          setTimeout(() => {
-            findArticle.main(ctx, next)
-          }, 100)
-        } else if (eRedis.load_status === 'COMPLETE') {
-          // 缓存数据可用
-          // 重置缓存过期时间
-          await redis_clent.pexpire(key, 300000)
-          // 返回数据
-          ctx.body = {
-            code: 0,
-            status: 200,
-            from: 'catch',
-            data: eRedis.data
-          }
-        }
-      }
-      // 缓存中没有数据，使用redis上锁
-      let lock_status = await this.redis_lock(key)
-      // 检查上锁状态
-      if (lock_status.status === 'completed') {
-        // 上锁成功，查询mongodb
-        let db_result = await this.query_db(article_id)
-        // 解锁并刷新缓存
-        await this.redis_unlock(key, lock_status.query_id, db_result)
-        ctx.body = {
-          code: 0,
-          status: 200,
-          from: 'db',
-          data: db_result
-        }
-      } else if (lock_status === 'failured') {
-        // 上锁失败，自旋
-        setTimeout(() => {
-          findArticle.main(ctx, next)
-        }, 100)
-      }
-    } catch (err) {
-      console.error(err)
-      ctx.throw(500, 'server error')
-    }
+// 延时
+async function sleep(ms) {
+  await new Promise( resolve => {
+    setTimeout(resolve, ms)
+  }) 
+}
 
+// 查询redis，查看数据的状态
+async function query_redis(key) {
+  let result = await redis_client.getAsync(key)
+  return result
+}
+
+// 刷新资源过期时间（五分钟）
+async function reset_redis(key) {
+  await redis_client.pexpire(key, 300000)
+}
+
+// redis上锁
+async function redis_lock(lock_key, lock_id) {
+  /**
+   * 上锁
+   *  参数'NX'保证一次最多只有一个线程set成功
+   *  */
+  let is_lock = await redis_client.setAsync(lock_key, lock_id, 'NX', 'PX', 200)
+  return is_lock === 'OK'
+}
+
+// 查询mongo
+async function query_mongo(id) {
+  let result = await articles.findById(id)
+  return result
+}
+
+// redis解锁
+async function redis_unlock(lock_key, lock_id) {
+  let script = `if redis.call("get","${lock_key}") == "${lock_id}" then
+  return redis.call("del","${lock_key}")
+else
+  return 0
+end`
+  let result = await redis_client.eval(script, 0)
+  return result
+}
+
+// 刷新redis资源
+async function redis_set(key, data) {
+  // 资源过期时间 五分钟
+  await redis_client.setAsync(key, JSON.stringify(data), 'PX', 300000)
+}
+
+// 入口
+async function main(ctx, next) {
+  // 文章id
+  let id = ctx.params.id
+  
+  // 文章资源在redis中的标识符
+  let key = 'article-'+id
+  
+  // 资源锁key，通过这个字段是否为null判断资源是否上锁
+  let lock_key = 'article-lock-'+id
+  
+  // 锁id，防止解除不属于自己的锁
+  let lock_id = Math.random()
+  
+  // 查询redis
+  let result_redis = await query_redis(key)
+  if (result_redis !== null) {
+    // 从缓存中获取到了数据
+    ctx.body = {
+      code: 0,
+      status: 200,
+      from: 'cache',
+      data: JSON.parse(result_redis)
+    }
+    // 刷新资源过期时间
+    reset_redis(key)
+  } else {
+    // 给资源上锁
+    let lock = await redis_lock(lock_key, lock_id)
+    if (lock === false) {
+      // 未成功上锁
+      // 自旋等待
+      await sleep(80)
+      await main(ctx, next)
+    } else {
+      // 成功上锁
+      let result_mongo = await query_mongo(id)
+      if (result_mongo === null) {
+        // 资源不存在
+        ctx.throw(404, 'resourse not found')
+      }
+  
+      // 解除锁，此操作只能解除自己设置的锁
+      let is_unlock = await redis_unlock(lock_key, lock_id)
+      console.log('is_unlock: '+is_unlock)
+      if (is_unlock === true) {
+        // 锁成功解除
+        // 刷新缓存
+        await redis_set(key, result_mongo)
+      }
+  
+      // 返回数据
+      ctx.body = {
+        code: 0,
+        status: 200,
+        from: 'db',
+        data: result_mongo
+      }
+    }
   }
 }
 
-module.exports = findArticle
+module.exports = main
