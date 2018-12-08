@@ -7,7 +7,10 @@ const resourseSharing = {
     // console.log(ctx.request.headers)
 
     // 允许跨域访问的域名
-    ctx.set('Access-Control-Allow-Origin', ctx.request.headers['origin'])
+    let origin = ctx.request.headers['origin']
+    if (origin) {
+      ctx.set('Access-Control-Allow-Origin', origin)
+    }
     
     // 允许跨域访问的方法
     ctx.set('Access-Control-Allow-Methods', '*')
