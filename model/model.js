@@ -50,6 +50,7 @@ const userModel = mongoose.model('users', userSchema)
 /**
  * article_title:             文章标题
  * article_description:       文章描述
+ * article_img:               文章首页图片
  * article_content:           文章原文
  * article_release_time:      文章发布时间
  * article_last_update_time:  文章最后修改时间
@@ -61,6 +62,7 @@ const userModel = mongoose.model('users', userSchema)
 const articleSchema = new mongoose.Schema({
   article_title: {type: String},
   article_description: {type: String},
+  article_img: {type: String},
   article_content: {type: String},
   article_release_time: {type: Number},
   article_last_update_time: {type: Number},
