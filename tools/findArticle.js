@@ -38,10 +38,8 @@ async function reset_redis(key) {
 
 // redis上锁
 async function redis_lock(lock_key, lock_id) {
-  /**
-   * 上锁
-   *  参数'NX'保证一次最多只有一个线程set成功
-   *  */
+  // 上锁
+  // 参数'NX'保证一次最多只有一个线程set成功
   let is_lock = await redis_client.setAsync(lock_key, lock_id, 'NX', 'PX', 200)
   return is_lock === 'OK'
 }
@@ -52,21 +50,21 @@ async function query_mongo(id) {
   return result
 }
 
-// redis解锁
-async function redis_unlock(lock_key, lock_id) {
-  let script = `if redis.call("get","${lock_key}") == "${lock_id}" then
-  return redis.call("del","${lock_key}")
-else
-  return 0
-end`
-  let result = await redis_client.eval(script, 0)
+// 解锁并刷新redis资源数据
+async function redis_unlock(lock_key, lock_id, key, data) {
+  let script = `if redis.call('get', '${lock_key}') == '${lock_id}' then
+    if redis.call('del', '${lock_key}') == 1 then
+      return redis.call('set', '${key}', '${data}', 'PX', 300000)
+    else
+      return -2
+    end
+  else
+    return -1
+  end`
+  // console.log(script)
+  let result = await redis_client.evalAsync(script, 0)
+  // console.log('unlock-: '+result)
   return result
-}
-
-// 刷新redis资源
-async function redis_set(key, data) {
-  // 资源过期时间 五分钟
-  await redis_client.setAsync(key, JSON.stringify(data), 'PX', 300000)
 }
 
 // 入口
@@ -109,23 +107,19 @@ async function main(ctx, next) {
       if (result_mongo === null) {
         // 资源不存在
         ctx.throw(404, 'resourse not found')
-      }
-  
-      // 解除锁，此操作只能解除自己设置的锁
-      let is_unlock = await redis_unlock(lock_key, lock_id)
-      console.log('is_unlock: '+is_unlock)
-      if (is_unlock === true) {
-        // 锁成功解除
-        // 刷新缓存
-        await redis_set(key, result_mongo)
-      }
-  
-      // 返回数据
-      ctx.body = {
-        code: 0,
-        status: 200,
-        from: 'db',
-        data: result_mongo
+      } else {
+        // 资源存在
+        // 返回数据
+        ctx.body = {
+          code: 0,
+          status: 200,
+          from: 'db',
+          data: result_mongo
+        }
+
+        // 解除锁同时刷新redis数据，此操作只能解除自己设置的锁
+        let data = JSON.stringify(result_mongo)
+        await redis_unlock(lock_key, lock_id, key, data)
       }
     }
   }
