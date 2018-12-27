@@ -20,7 +20,7 @@ const errorHander = {
           ctx.body = {
             code: 1,
             status: 401,
-            message: error.message || 'you do not have access'
+            message: error.message || 'you do not have the access permission'
           }
         } break
   
