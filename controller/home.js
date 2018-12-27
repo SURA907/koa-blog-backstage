@@ -21,6 +21,7 @@ const HomeController = {
         article_title: 1,
         article_description: 1,
         article_img: 1,
+        article_type: 1,
         article_release_time: 1,
         article_last_updata_tiem: 1,
         article_author_id: 1,
