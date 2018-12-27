@@ -12,7 +12,8 @@ const ownRoutes = require('./routes/index')
 const errorHandle = require('./tools/errorHandle')
 const logHanele = require('./tools/log')
 const resourseSharing = require('./tools/resourseSharing')
-
+const jwt_config = require('./tools/jwtConfig')
+const jwt_parse = require('./tools/jwtParse')
 
 // 实例化Koa
 const app = new Koa()
@@ -23,9 +24,10 @@ router.use(ownRoutes)
 // 装载中间件
 app
   .use(errorHandle)
+  .use(logHanele)
   .use(resourseSharing)
   .use(helmet())
-  .use(logHanele)
+  .use(jwt_config)
   .use(bodyParser())
   .use(router.routes())
   .use(router.allowedMethods())
