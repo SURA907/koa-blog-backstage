@@ -24,7 +24,7 @@ const conn = mongoose.connection
 
 // 确认连接建立
 conn.on('connected', () => {
-  console.log('database connection succeeded')
+  console.log('mongodb ready')
 })
 
 /**
@@ -37,20 +37,23 @@ conn.on('connected', () => {
  */
 // 定义Schema: userSchema
 const userSchema = new mongoose.Schema({
-  username: {type: String},
+  username: {type: String, indexes: true},
   password: {type: String},
   avatar: {type: String, default: 'null'},
-  mail: {type: String},
+  mail: {type: String, indexes: true},
+  create_time: {type: String},
+  update_time: {type: String},
   user_type: {type: String},
   is_delete: {type: String, march: /(^YES$|^NO$)/, default: 'NO'}
 })
 // 装载model: users
-const userModel = mongoose.model('users', userSchema)
+const userModel = mongoose.model('user', userSchema)
 
 /**
  * article_title:             文章标题
  * article_description:       文章描述
  * article_img:               文章首页图片
+ * article_type:              文章类型(markdown等)
  * article_content:           文章原文
  * article_release_time:      文章发布时间
  * article_last_update_time:  文章最后修改时间
@@ -60,13 +63,14 @@ const userModel = mongoose.model('users', userSchema)
  */
 // 定义Schema: articles
 const articleSchema = new mongoose.Schema({
-  article_title: {type: String},
+  article_title: {type: String, indexes: true},
   article_description: {type: String},
-  article_img: {type: String},
+  article_img: {type: String, default: null},
+  article_type: {type: String},
   article_content: {type: String},
-  article_release_time: {type: Number},
+  article_release_time: {type: Number, indexes: true},
   article_last_update_time: {type: Number},
-  article_author_id: {type: String},
+  article_author_id: {type: String, indexes: true},
   article_author: {type: String},
   is_delete: {type: String, march: /(^YES$|^NO$)/, default: 'NO'}
 })
