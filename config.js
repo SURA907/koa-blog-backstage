@@ -5,6 +5,7 @@
  *  HTTP_PORT: http端口
  *  HTTPS_PORT: https端口
  *  CA_CERT: https使用的ca证书位置
+ *  TOKEN_KEY: token加解密用到的RSA密匙位置
  */
 const configs = {
   DB: {
@@ -28,6 +29,10 @@ const configs = {
   CA_CERT: {
     KEY: '',
     CERT: ''
+  },
+  TOKEN_KEY: {
+    PUBLIC_KEY: './RSA/TOKEN/server.pem',
+    PRIVATE_KEY: './RSA/TOKEN/server.key'
   }
 }
 
