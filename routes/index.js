@@ -5,9 +5,9 @@
 const router = require('koa-router')()
 
 // 引入controller
-const home = require('./../controller/home')
 const articles = require('./../controller/article')
 const users = require('./../controller/users')
+const mail = require('./../controller/mail')
 
 // 鉴权中间件
 const accessPermission = require('./../tools/accessPermission')
@@ -17,18 +17,20 @@ const accessPermission = require('./../tools/accessPermission')
  *  */
 // public api
 // 首页信息
-router.get('/index', home.index)
+router.get('/articles', articles.get_index)
 // 根据文章唯一标识符获取文章
 router.get('/articles/:id', articles.find)
 // 用户登录
 router.post('/users/signin', users.signin)
 // 用户注册
 router.post('/users', users.signup)
+// 发送用户注册邮件
+router.post('/mail/signup', mail.signup)
 
 // need login
 router.all('*', accessPermission.isSignin)
 // 新建文章
-router.post('/articles/:id', articles.create_article)
+router.post('/articles', articles.create_article)
 // 修改文章
 router.put('/articles/:id', articles.update_article)
 // 删除文章
