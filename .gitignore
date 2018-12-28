@@ -3,3 +3,6 @@ node_modules
 
 # RSA
 RSA
+
+# config file
+config.js
