@@ -31,9 +31,18 @@ const configs = {
     CERT: ''
   },
   TOKEN_KEY: {
-    PUBLIC_KEY: './RSA/TOKEN/server.pem',
-    PRIVATE_KEY: './RSA/TOKEN/server.key'
+    PUBLIC_KEY: './RSA/TOKEN/server.key',
+    PRIVATE_KEY: './RSA/TOKEN/server.pem'
+  },
+  MAIL: {
+    host: 'smtp.163.com',
+    secureConnection: true, // use SSL
+    port: 465,
+    secure: true,
+    auth: {
+      user: 'sura907@163.com', // 发件邮箱
+      pass: 'email8806'  // 注意此处为授权码，并非网易账户登陆密码
+    }
   }
 }
-
 module.exports = configs
