@@ -66,6 +66,7 @@ const articleSchema = new mongoose.Schema({
   article_title: {type: String, indexes: true},
   article_description: {type: String},
   article_img: {type: String, default: null},
+  article_theme: {type: String},
   article_type: {type: String},
   article_content: {type: String},
   article_release_time: {type: Number, indexes: true},
@@ -75,6 +76,25 @@ const articleSchema = new mongoose.Schema({
   is_delete: {type: String, march: /(^YES$|^NO$)/, default: 'NO'}
 })
 const articleModel = mongoose.model('articles', articleSchema)
+
+/**
+ * comment_content: 评论主体
+ * comment_parents: 若此评论为追评，此字段为主楼评论的id
+ * comment_release_time: 评论发布时间
+ * comment_author: 评论发布者用户名
+ * comment_author_id: 评论发布者唯一标识符
+ * is_delete: 评论是否已删除
+ */
+// 定义Schema: comments
+const commentSchema = new mongoose.Schema({
+  comment_content: {type: String},
+  comment_parents: {type: String},
+  comment_release_time: {type: String},
+  comment_author: {type: String},
+  comment_author_id: {type: String, indexes: true},
+  is_delete: {type: String, march: /(^YES$|^NO$)/, default: 'NO'}
+})
+const commentModel = mongoose.model('comments', commentSchema)
 
 // 向外暴露model
 module.exports = {
