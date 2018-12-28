@@ -5,6 +5,8 @@ const fs = require('fs')
 const jwt = require('jsonwebtoken')
 const user = require('./../model/model').getModel('user')
 const hash = require('./../tools/hash')
+const redis_client = require('./../tools/redis')
+
 
 const PUBLIC_KEY_PATH = require('./../config').TOKEN_KEY.PUBLIC_KEY
 
@@ -15,8 +17,8 @@ const user_controller = {
   
   // 登录
   async signin (ctx, next) {
-    let username = ctx.body.username || ''
-    let password = ctx.body.password || ''
+    let username = ctx.request.body.username || ''
+    let password = ctx.request.body.password || ''
     username = username.trim()
     password = password.trim()
     // 检查参数
@@ -81,7 +83,14 @@ const user_controller = {
 
   // 根据用户id获取用户公开信息（用户名，头像等）
   async public (ctx, next) {
-    
+    ctx.body = {
+      code: 0,
+      status: 200,
+      data: {
+        username: ctx.user_status.username,
+        avatar: ctx.user_status.avatar
+      }
+    }
   },
 
   // 修改密码
