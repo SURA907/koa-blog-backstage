@@ -9,6 +9,7 @@
  * model: 存储资源的数据库model
  * redis_client: 存储资源的redis
  */
+const ObjectId = require('mongoose').Types.ObjectId
 
 // 延时
 async function sleep(ms) {
@@ -38,8 +39,11 @@ async function redis_lock(redis_client, lock_key, lock_id) {
 
 // 查询mongo
 async function query_mongo(model, id) {
-  if (model.findById) {
-    let result = await model.findById(id)
+  if (model.find) {
+    let result = await model.find({
+      _id: ObjectId(id),
+      is_delete: 'NO'
+    })
     return result
   }
 }
@@ -66,10 +70,8 @@ async function main(model, redis_client, id, flag) {
   
   // 资源在redis中的标识符
   let key = flag+'-'+id
-  
   // 资源锁key，通过这个字段是否为null判断资源是否上锁
   let lock_key = flag+'-lock-'+id
-  
   // 锁id，防止解除不属于自己的锁
   let lock_id = Math.random()
   
@@ -81,10 +83,7 @@ async function main(model, redis_client, id, flag) {
     reset_redis(redis_client, key)
     return new Promise( resolve => {
       resolve({
-        code: 0,
-        status: 200,
         from: 'cache',
-        message: 'complete',
         data: JSON.parse(result_redis)
       })
     })
@@ -97,23 +96,21 @@ async function main(model, redis_client, id, flag) {
     await sleep(50)
     return await main(model, redis_client, id, flag)
   }
-  // 成功上锁
+  // 成功上锁，查询数据库
   let result_mongo = await query_mongo(model, id)
-  if (result_mongo === null) {
-    // 资源不存在
-    ctx.throw(404, 'resourse not found')
+  if (result_mongo.length === 0) {
+    return new Promise( resolve => {
+      resolve(null)
+    })
   }
   // 解除锁同时刷新redis数据，此操作只能解除自己设置的锁
-  let data = JSON.stringify(result_mongo)
+  let data = JSON.stringify(result_mongo[0])
   await redis_unlock(redis_client, lock_key, lock_id, key, data)
   // 返回数据
   return new Promise( resolve => {
     resolve({
-      code: 0,
-      status: 200,
       from: 'db',
-      message: 'complete',
-      data: result_mongo
+      data: result_mongo[0]
     })
   })
 }
