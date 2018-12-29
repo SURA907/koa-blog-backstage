@@ -10,7 +10,6 @@ const redis_client = require('./../tools/redis')
 
 const PUBLIC_KEY_PATH = require('./../config').TOKEN_KEY.PUBLIC_KEY
 
-
 const PUBLIC_KEY = fs.readFileSync(PUBLIC_KEY_PATH)
 
 const user_controller = {
@@ -78,7 +77,53 @@ const user_controller = {
 
   // 用户注册
   async signup (ctx, next) {
-
+    // 就收并格式化参数
+    let username = ctx.request.body.username || ''
+    let password = ctx.request.body.password || ''
+    let mail = ctx.request.body.mail || ''
+    let verification_code = ctx.request.body.verification_code || ''
+    username = username.trim()
+    password = password.trim()
+    mail = mail.trim()
+    verification_code = verification_code.trim()
+    let mail_reg = /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/
+    if (username === '' || password === '' || mail_reg.test(mail) !== true || verification_code === '') {
+      // 参数不合法
+      ctx.throw(400, 'bad request, check args')
+    }
+    // 检索redis，获取验证码
+    let key = 'mail-signup-'+mail
+    let result_reids = await redis_client.getAsync(key)
+    if (result_reids !== verification_code) {
+      // 验证码不正确
+      ctx.throw(403, 'Incorrect verification code')
+    }
+    let result_mongo = await user.find({
+      username: username
+    })
+    if (result_mongo.length !== 0) {
+      // 用户名已存在
+      ctx.throw(401, 'username is exist')
+    }
+    password = hash(password)
+    let time = new Date().getTime()
+    user.insertMany({
+      username: username,
+      password: password,
+      mail: mail,
+      avatar: null,
+      user_type: 'general',
+      is_delete: 'NO',
+      create_time: time,
+      update_time: time
+    })
+    // 删除redis中的验证码
+    redis_client.delAsync(key)
+    ctx.body = {
+      code: 0,
+      status: 200,
+      message: 'complete'
+    }
   },
 
   // 根据用户id获取用户公开信息（用户名，头像等）

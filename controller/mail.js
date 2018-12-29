@@ -5,6 +5,7 @@
 const mail_option = require('./../tools/createMailOption')
 const send_mail = require('./../tools/sendMail')
 const redis_client = require('./../tools/redis')
+const user = require('./../model/model').getModel('user')
 
 
 const mailController = {
@@ -18,6 +19,14 @@ const mailController = {
     if (mail === '' || mail_reg.test(mail) !== true) {
       // 参数不正确，抛出400
       ctx.throw(400, 'bad request, check args')
+    }
+    // 检测邮箱是否已经注册过
+    let data = await user.find({
+      mail: mail
+    })
+    if (data.length !== 0) {
+      // 此邮箱已经注册过
+      ctx.throw(400, 'this mail adress is exist')
     }
     // 生成验证码
     let verification_code = Math.floor((Math.random()*900000)+100000)
