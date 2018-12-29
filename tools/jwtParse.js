@@ -25,13 +25,19 @@ async function token_parse(ctx, next) {
   let user_token = token.split(' ')[1]
   // 解析token
   let jwt_user_status = await jwt.verify(user_token, PRIVATE_KEY)
+  jwt_user_status = jwt_user_status.data
   // 根据token信息查库
-  let result = await findResource(user, redis_client, jwt_user_status.data.id, 'user')
+  let result = await findResource(user, redis_client, jwt_user_status.id, 'user')
+  if (result === null) {
+    ctx.throw(401, 'Invalid token')
+  }
   let db_user_status = result.data
   // let db_user_status = await user.findById(jwt_user_status.id)
-  if (db_user_status.length === 0 || db_user_status.update_time !== jwt_user_status.update_time) {
+  console.log(jwt_user_status)
+  console.log(db_user_status)
+  if (db_user_status === {} || db_user_status.update_time !== jwt_user_status.update_time) {
     // token 无效, 抛出401
-    ctx.throw(401, 'you do not have the access permission')
+    ctx.throw(401, 'Invalid token')
   } else {
     // token 有效
     ctx.user_status = db_user_status
