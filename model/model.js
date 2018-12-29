@@ -87,6 +87,7 @@ const articleModel = mongoose.model('articles', articleSchema)
  */
 // 定义Schema: comments
 const commentSchema = new mongoose.Schema({
+  content_article_id: {type: String, indexes: true},
   comment_content: {type: String},
   comment_parents: {type: String},
   comment_release_time: {type: String},
