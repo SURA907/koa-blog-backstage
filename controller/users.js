@@ -87,7 +87,7 @@ const user_controller = {
     mail = mail.trim()
     verification_code = verification_code.trim()
     let mail_reg = /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/
-    if (username === '' || password === '' || mail_reg.test(mail) !== true || verification_code === '') {
+    if (username === '' || password.length < 6 || mail_reg.test(mail) !== true || verification_code === '') {
       // 参数不合法
       ctx.throw(400, 'bad request, check args')
     }

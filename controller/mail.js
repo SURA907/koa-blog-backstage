@@ -16,7 +16,7 @@ const mailController = {
     let mail_reg = /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/
     mail = mail.trim()
     // 检查参数
-    if (mail === '' || mail_reg.test(mail) !== true) {
+    if (mail_reg.test(mail) !== true) {
       // 参数不正确，抛出400
       ctx.throw(400, 'bad request, check args')
     }
