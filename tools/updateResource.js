@@ -18,6 +18,13 @@
  */
 const ObjectId = require('mongoose').Types.ObjectId
 
+// 阻塞
+async function sleep (ms) {
+  await new Promise(resolve => {
+    setTimeout(resolve, ms)
+  })
+}
+
 // update mongo数据
 async function mongo_update (model, id, update_message) {
   await model.updateOne({
@@ -29,7 +36,11 @@ async function mongo_update (model, id, update_message) {
 // 这把锁的作用是在mongo更新期间阻塞资源请求
 async function redis_delete (redis_client, key, lock_key, lock_id) {
   let lua = `if redis.call('del', '${key}') == 'OK' then
-    return redis.call('set', '${lock_key}', '${lock_id}', 'PX', 300)
+    if redis.call('get', '${lock_key})' != '${lock_id}' then
+      return redis.call('set', '${lock_key}', '${lock_id}', 'PX', 300)
+    else
+      return -4
+    end
   else
     return -1
   end`
@@ -50,13 +61,18 @@ async function main (model, redis_client, id, flag, update_message) {
   let key = flag+'-'+id
   // redis中，对应资源锁的key
   let lock_key = flag+'-lock-'+id
-  let lock_id = Math.random()
+  let lock_id = 'update'
   
   // 删除缓存中的资源，并上锁
-  await redis_delete(redis_client, key, lock_key, lock_id)
+  let result = await redis_delete(redis_client, key, lock_key, lock_id)
+  if (result === -4) {
+    // redis上锁失败，有其他线程正在更新当前资源，自旋
+    await sleep(50)
+    return await main(model, redis_client, id, flag, update_message)
+  }
   // 更新mongo资源
   await mongo_update(model, id, update_message)
-  // 解锁
+  // 解锁并再次删除缓存数据
   await redis_unlock(redis_client, key, lock_key)
 
   return true
