@@ -16,7 +16,7 @@ async function errorHander (ctx, next) {
     switch (error.status) {
 
       case 400: {
-        ctx.status = 400
+        ctx.status = 200
         ctx.body = {
           code: 1,
           status: 400,
@@ -34,7 +34,7 @@ async function errorHander (ctx, next) {
       } break
 
       case 403: {
-        ctx.status = 403,
+        ctx.status = 200,
         ctx.body = {
           code: 1,
           status: 403,
@@ -43,7 +43,7 @@ async function errorHander (ctx, next) {
       } break
 
       case 404: {
-        ctx.status = 404
+        ctx.status = 200
         ctx.body = {
           code: 1,
           status: 404,
@@ -52,7 +52,7 @@ async function errorHander (ctx, next) {
       } break
 
       case 500: {
-        ctx.status = 500
+        ctx.status = 200
         ctx.body = {
           code: 1,
           status: 500,

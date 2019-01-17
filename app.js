@@ -11,7 +11,7 @@ const helmet = require('koa-helmet')
 const ownRoutes = require('./routes/index')
 const errorHandle = require('./tools/errorHandle')
 const logHanele = require('./tools/log')
-const resourseSharing = require('./tools/resourseSharing')
+const resourceSharing = require('./tools/resourceSharing')
 const jwt_config = require('./tools/jwtConfig')
 const jwt_parse = require('./tools/jwtParse')
 
@@ -23,10 +23,10 @@ router.use(ownRoutes)
 
 // 装载中间件
 app
+  .use(helmet())
   .use(errorHandle)
   .use(logHanele)
-  .use(resourseSharing)
-  .use(helmet())
+  .use(resourceSharing)
   .use(jwt_config)
   .use(bodyParser())
   .use(router.routes())

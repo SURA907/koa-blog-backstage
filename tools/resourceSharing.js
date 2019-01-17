@@ -27,7 +27,13 @@ const resourseSharing = {
       ctx.set('Access-Control-Allow-Headers', headers)
     }
 
-    await next()
+    // 检测到OPTIONS请求
+    if (ctx.request.method === 'OPTIONS') {
+      ctx.status = 200
+      ctx.body = ''
+    } else {
+      await next()
+    }
   }
 
 }
