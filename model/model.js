@@ -41,38 +41,38 @@ const userSchema = new mongoose.Schema({
   password: {type: String},
   avatar: {type: String, default: 'null'},
   mail: {type: String, indexes: true},
-  create_time: {type: String},
-  update_time: {type: String},
-  user_type: {type: String},
+  create_at: {type: String},
+  update_at: {type: String},
+  type: {type: String},
   is_delete: {type: String, march: /(^YES$|^NO$)/, default: 'NO'}
 })
 // 装载model: users
 const userModel = mongoose.model('user', userSchema)
 
 /**
- * article_title:             文章标题
- * article_description:       文章描述
- * article_img:               文章首页图片
- * article_type:              文章类型(markdown等)
- * article_content:           文章原文
- * article_release_time:      文章发布时间
- * article_last_update_time:  文章最后修改时间
- * article_author_id:         文章作者id
- * article_author:            文章作者用户名
+ * title:             文章标题
+ * description:       文章描述
+ * img:               文章首页图片
+ * type:              文章类型(markdown等)
+ * content:           文章原文
+ * create_at:      文章发布时间
+ * update_at:  文章最后修改时间
+ * user_id:         文章作者id
+ * user:            文章作者用户名
  * is_delete:                 文章是否被删除
  */
 // 定义Schema: articles
 const articleSchema = new mongoose.Schema({
-  article_title: {type: String, indexes: true},
-  article_description: {type: String},
-  article_img: {type: String, default: null},
-  article_theme: {type: String},
-  article_type: {type: String},
-  article_content: {type: String},
-  article_release_time: {type: Number, indexes: true},
-  article_last_update_time: {type: Number},
-  article_author_id: {type: String, indexes: true},
-  article_author: {type: String},
+  title: {type: String, indexes: true},
+  description: {type: String},
+  img: {type: String, default: null},
+  theme: {type: String},
+  type: {type: String},
+  content: {type: String},
+  create_at: {type: Number, indexes: true},
+  update_at: {type: Number},
+  user_id: {type: String, indexes: true},
+  user: {type: String},
   is_delete: {type: String, march: /(^YES$|^NO$)/, default: 'NO'}
 })
 const articleModel = mongoose.model('articles', articleSchema)
@@ -87,12 +87,13 @@ const articleModel = mongoose.model('articles', articleSchema)
  */
 // 定义Schema: comments
 const commentSchema = new mongoose.Schema({
-  content_article_id: {type: String, indexes: true},
-  comment_content: {type: String},
-  comment_parents: {type: String},
-  comment_release_time: {type: String},
-  comment_author: {type: String},
-  comment_author_id: {type: String, indexes: true},
+  article_id: {type: String, indexes: true},
+  content: {type: String},
+  parents: {type: String},
+  create_at: {type: String},
+  update_at: {type: String},
+  user: {type: String},
+  user_id: {type: String, indexes: true},
   is_delete: {type: String, march: /(^YES$|^NO$)/, default: 'NO'}
 })
 const commentModel = mongoose.model('comments', commentSchema)

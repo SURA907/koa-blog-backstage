@@ -25,19 +25,19 @@ const articlesController = {
     }
     let index_data = await articles.find({
       is_delete: 'NO',
-      article_release_time: {$lte: time}
+      create_at: {$lte: time}
     }, {
       _id: 1,
-      article_title: 1,
-      article_description: 1,
-      article_img: 1,
-      article_type: 1,
-      article_theme: 1,
-      article_release_time: 1,
-      article_last_updata_tiem: 1,
-      article_author_id: 1,
-      article_author: 1,
-    }).sort({article_release_time: -1}).limit(6).skip(6*page)
+      title: 1,
+      description: 1,
+      img: 1,
+      type: 1,
+      theme: 1,
+      create_at: 1,
+      update_at: 1,
+      user: 1,
+      user_id: 1,
+    }).sort({create_at: -1}).limit(6).skip(6*page)
     ctx.body = {
       code: 0,
       status: 200,
