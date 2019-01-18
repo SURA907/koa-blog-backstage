@@ -14,14 +14,13 @@ const methods = {
   async isSignin (ctx, next) {
     // 解析token并检验token有效性
     await jwtParse(ctx, next)
-    // 通过中间件过滤，拥有有效token
   },
   // 是否为管理员
   async isAdmin (ctx, next) {
     // 解析并验证token有效性
     await jwtParse(ctx, next)
     // token有效，检测用户权限
-    if (ctx.user_status.user_type !== 'admin') {
+    if (ctx.user_status.type !== 'admin') {
       // 无管理员权限，抛出401
       ctx.throw(401, 'only allowed admin')
     } else {

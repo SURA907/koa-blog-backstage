@@ -72,35 +72,35 @@ const articlesController = {
   // 添加文章
   async create_article (ctx, next) {
     // 接收并检查参数
-    let article_title = ctx.request.body.article_title || ''
-    let article_description = ctx.request.body.article_description || ''
-    let article_type = ctx.request.body.article_type || ''
-    let article_theme = ctx.request.body.article_content || ''
-    let article_content = ctx.request.body.article_content || ''
-    let article_img = ctx.request.body.article_img || ''
-    article_title = article_title.trim()
-    article_description = article_description.trim()
-    article_type = article_type.trim()
-    article_theme = article_theme.trim()
-    article_content = article_content.trim()
-    article_img = article_img.trim()
-    if (article_title === '' || article_description === '' || article_type === '' || article_content === '' || article_theme === '') {
+    let title = ctx.request.body.title || ''
+    let description = ctx.request.body.description || ''
+    let type = ctx.request.body.type || ''
+    let theme = ctx.request.body.theme || ''
+    let content = ctx.request.body.content || ''
+    let img = ctx.request.body.img || ''
+    title = title.trim()
+    description = description.trim()
+    type = type.trim()
+    theme = theme.trim()
+    content = content.trim()
+    img = img.trim()
+    if (title === '' || description === '' || type === '' || theme === '' || content === '') {
       // 参数不合法
       ctx.throw(400, 'bad request, check args')
     }
     let time = new Date().getTime()
     // 插入数据
     await articles.insertMany({
-      article_title: article_title,
-      article_description: article_description,
-      article_type: article_type,
-      article_theme: article_theme,
-      article_content: article_content,
-      article_img: article_img,
-      article_release_time: time,
-      article_last_update_time: time,
-      article_author: ctx.user_status.username,
-      article_author_id: ctx.user_status.id,
+      title: title,
+      description: description,
+      type: type,
+      theme: theme,
+      content: content,
+      img: img,
+      create_at: time,
+      update_at: time,
+      user: ctx.user_status.username,
+      user_id: ctx.user_status.id,
       is_delete: 'NO'
     })
     // 响应信息
@@ -114,21 +114,21 @@ const articlesController = {
   // 更新文章
   async update_article (ctx, next) {
     // 接收并检查参数
-    let article_id = ctx.params.id || ''
-    let article_title = ctx.request.body.article_title || ''
-    let article_description = ctx.request.body.article_description || ''
-    let article_type = ctx.request.body.article_type || ''
-    let article_theme = ctx.request.body.article_content || ''
-    let article_content = ctx.request.body.article_content || ''
-    let article_img = ctx.request.body.article_img || ''
-    article_id = article_id.trim()
-    article_title = article_title.trim()
-    article_description = article_description.trim()
-    article_type = article_type.trim()
-    article_theme = article_theme.trim()
-    article_content = article_content.trim()
-    article_img = article_img.trim()
-    if (article_id === '' || article_title === '' || article_description === '' || article_type === '' || article_content === '' || article_theme === '') {
+    let id = ctx.params.id || ''
+    let title = ctx.request.body.title || ''
+    let description = ctx.request.body.description || ''
+    let type = ctx.request.body.type || ''
+    let theme = ctx.request.body.theme || ''
+    let content = ctx.request.body.content || ''
+    let img = ctx.request.body.img || ''
+    id = id.trim()
+    title = title.trim()
+    description = description.trim()
+    type = type.trim()
+    theme = theme.trim()
+    content = content.trim()
+    img = img.trim()
+    if (id === '' || title === '' || description === '' || type === '' || theme === '' || content === '') {
       // 参数不合法
       ctx.throw(400, 'bad request, check args')
     }
@@ -138,17 +138,18 @@ const articlesController = {
       // 资源不存在
       ctx.throw(404, 'resource is not exist')
     }
-    if (result.data.article_author_id !== ctx.user_status.id) {
+    if (result.data.user_id !== ctx.user_status.id) {
       // 此用户不是文章的发布者
       ctx.throw(401, 'you do not have the access permission')
     } else {
-      await updateResource(articles, redis_client, article_id, 'article', {
-        article_title: article_title,
-        article_description: article_description,
-        article_type: article_type,
-        article_img: article_img,
-        article_theme: article_theme,
-        article_content: article_content
+      await updateResource(articles, redis_client, id, 'article', {
+        title: title,
+        description: description,
+        type: type,
+        img: img,
+        theme: theme,
+        content: content,
+        update_at: new Date().getTime()
       })
       ctx.body = {
         code: 0,
@@ -161,22 +162,22 @@ const articlesController = {
   // 删除文章
   async delete_article (ctx, next) {
     // 接收并检查参数
-    let article_id = ctx.params.id || ''
-    article_id = article_id.trim()
-    if (article_id === '') {
+    let id = ctx.params.id || ''
+    id = id.trim()
+    if (id === '') {
       // 参数不合法
       ctx.throw(400, 'bad request, check args')
     }
-    let result = await findResource(articles, redis_client, article_id, 'article')
+    let result = await findResource(articles, redis_client, id, 'article')
     if (result === null) {
       // 资源不存在
       ctx.throw(404, 'resource is not exist')
     }
-    if (result.data.article_author_id !== ctx.user_status.id) {
-      // 此用户不是文章的发布者
+    if (result.data.user_id !== ctx.user_status.id && ctx.user_status.type !== 'admin') {
+      // 此用户不是管理员，且不是文章的发布者
       ctx.throw(401, 'you do not have the access permission')
     } else {
-      await updateResource(articles, redis_client, article_id, 'article', {
+      await updateResource(articles, redis_client, id, 'article', {
         is_delete: 'YES'
       })
       ctx.body = {

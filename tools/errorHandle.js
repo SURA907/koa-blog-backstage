@@ -25,7 +25,7 @@ async function errorHander (ctx, next) {
       } break
 
       case 401: {
-        ctx.status = 401
+        ctx.status = 200
         ctx.body = {
           code: 1,
           status: 401,

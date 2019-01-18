@@ -50,9 +50,9 @@ const user_controller = {
             username: result[0].username,
             mail: result[0].mail,
             avatar: result[0].avatar,
-            create_time: result[0].create_time,
-            update_time: result[0].update_time,
-            user_type: result[0].user_type,
+            create_at: result[0].create_at,
+            update_at: result[0].update_at,
+            type: result[0].type,
           },
           // 过期时间，一小时（注意此处时间单位是秒）
           exp: Math.floor(Date.now() / 1000) + 60*60
@@ -77,7 +77,7 @@ const user_controller = {
 
   // 用户注册
   async signup (ctx, next) {
-    // 就收并格式化参数
+    // 接收并格式化参数
     let username = ctx.request.body.username || ''
     let password = ctx.request.body.password || ''
     let mail = ctx.request.body.mail || ''
@@ -112,10 +112,10 @@ const user_controller = {
       password: password,
       mail: mail,
       avatar: null,
-      user_type: 'general',
+      type: 'general',
       is_delete: 'NO',
-      create_time: time,
-      update_time: time
+      create_at: time,
+      update_at: time
     })
     // 删除redis中的验证码
     redis_client.delAsync(key)
