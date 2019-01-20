@@ -14,7 +14,7 @@ const mailController = {
     let mail = ctx.request.body.mail || ''
     // 确认邮箱格式的正则表达式
     let mail_reg = /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/
-    mail = mail.trim()
+    mail = mail.trim().toLowerCase()
     // 检查参数
     if (mail_reg.test(mail) !== true) {
       // 参数不正确，抛出400

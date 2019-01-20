@@ -103,7 +103,7 @@ const user_controller = {
     })
     if (result_mongo.length !== 0) {
       // 用户名已存在
-      ctx.throw(401, 'username is exist')
+      ctx.throw(403, 'username is exist')
     }
     password = hash(password)
     let time = new Date().getTime()
@@ -126,7 +126,7 @@ const user_controller = {
     }
   },
 
-  // 根据用户id获取用户公开信息（用户名，头像等）
+  /* 根据用户id获取用户公开信息（用户名，头像等）*/
   async public (ctx, next) {
     ctx.body = {
       code: 0,
