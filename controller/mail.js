@@ -33,6 +33,7 @@ const mailController = {
     // 发送邮件
     let mailOptions = mail_option.signup(mail, verification_code)
     let result = await send_mail(mailOptions)
+    // 同一邮箱，邮件发送频率最快为45秒
     if (result === 'frequent') {
       // 邮件发送频率过高
       ctx.throw(403, 'your operation is too frequent')
@@ -53,7 +54,7 @@ const mailController = {
     // 格式化并校验参数
     let mail = ctx.request.body.mail || ''
     let mail_reg = /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/
-    mail = mail.trim()
+    mail = mail.trim().toLowerCase()
     if (mail === '' || mail_reg.test(mail)) {
       // 参数不合法
       ctx.throw(400, 'bad request, ')

@@ -84,7 +84,7 @@ const user_controller = {
     let verification_code = ctx.request.body.verification_code || ''
     username = username.trim()
     password = password.trim()
-    mail = mail.trim()
+    mail = mail.trim().toLowerCase()
     verification_code = verification_code.trim()
     let mail_reg = /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/
     if (username === '' || password.length < 6 || mail_reg.test(mail) !== true || verification_code === '') {
