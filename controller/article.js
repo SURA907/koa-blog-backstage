@@ -69,6 +69,28 @@ const articlesController = {
     }
   },
 
+  // 返回当前用户创建的所有文章
+  async own_articles (ctx, next) {
+    let result = await articles.find({
+      user_id: ctx.user_status._id
+    }, {
+      _id: 1,
+      title: 1,
+      description: 1,
+      img: 1,
+      type: 1,
+      theme: 1,
+      create_at: 1,
+      update_at: 1,
+    }).sort({create_at: -1})
+    ctx.body = {
+      code: 0,
+      status: 200,
+      message: 'complete',
+      data: result
+    }
+  },
+
   // 添加文章
   async create_article (ctx, next) {
     // 接收并检查参数

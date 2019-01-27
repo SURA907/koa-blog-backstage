@@ -29,14 +29,15 @@ router.post('/mail/signup', mail.signup)
 
 // need login
 router.all('*', accessPermission.isSignin)
+
+// 获取当前用户创建的所有文章数据，不包含文章主体
+router.get('/articles/users/own', articles.own_articles)
 // 新建文章
 router.post('/articles', articles.create_article)
 // 修改文章
 router.put('/articles/:id', articles.update_article)
 // 删除文章
 router.delete('/articles/:id', articles.delete_article)
-// 用户登出
-router.post('/users/signout', users.signout)
 // 根据token获取当前用户公开信息（用户名、头像等）
 router.get('/users/public', users.public)
 // 修改密码

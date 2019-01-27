@@ -34,7 +34,7 @@ async function token_parse(ctx, next) {
   let db_user_status = result.data
   // let db_user_status = await user.findById(jwt_user_status.id)
   if (db_user_status === {} || db_user_status.update_at !== jwt_user_status.update_at) {
-    // token 无效, 抛出401
+    // 用户信息修改导致token过期, 抛出401
     ctx.throw(401, 'Invalid token')
   } else {
     // token 有效

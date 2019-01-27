@@ -47,12 +47,8 @@ const user_controller = {
         token: jwt.sign({
           data: {
             id: result[0]._id,
-            username: result[0].username,
-            mail: result[0].mail,
-            avatar: result[0].avatar,
             create_at: result[0].create_at,
             update_at: result[0].update_at,
-            type: result[0].type,
           },
           // 过期时间，一小时（注意此处时间单位是秒）
           exp: Math.floor(Date.now() / 1000) + 60*60
@@ -133,7 +129,8 @@ const user_controller = {
       status: 200,
       data: {
         username: ctx.user_status.username,
-        avatar: ctx.user_status.avatar
+        avatar: ctx.user_status.avatar,
+        type: ctx.user_status.type
       }
     }
   },

@@ -48,8 +48,6 @@ async function query_mongo(model, id) {
   }
 }
 
-// 
-// 
 // 解锁并刷新redis资源数据
 async function redis_unlock(redis_client, lock_key, lock_id, key, data) {
   let script = `if redis.call('get', '${lock_key}') == '${lock_id}' then
@@ -61,7 +59,7 @@ async function redis_unlock(redis_client, lock_key, lock_id, key, data) {
   end`
   // console.log(script)
   let result = await redis_client.evalAsync(script, 0)
-  console.log(result)
+  // console.log(result)
   // console.log('unlock-: '+result)
   return result
 }
