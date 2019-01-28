@@ -6,3 +6,6 @@ RSA
 
 # config file
 config.js
+
+# vscode config
+.vscode
