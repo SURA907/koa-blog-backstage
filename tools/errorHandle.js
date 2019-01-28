@@ -61,7 +61,16 @@ async function errorHander (ctx, next) {
       } break
 
       default: {
-        throw error
+        if (error['name'] === 'JsonWebTokenError') {
+          ctx.status = 200
+          ctx.body = {
+            code: 1,
+            status: 401,
+            message: 'Invalid token'
+          }
+        } else {
+          throw error
+        }
       } break
       
     }

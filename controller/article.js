@@ -72,7 +72,8 @@ const articlesController = {
   // 返回当前用户创建的所有文章
   async own_articles (ctx, next) {
     let result = await articles.find({
-      user_id: ctx.user_status._id
+      user_id: ctx.user_status._id,
+      is_delete: 'NO'
     }, {
       _id: 1,
       title: 1,
@@ -80,6 +81,7 @@ const articlesController = {
       img: 1,
       type: 1,
       theme: 1,
+      user: 1,
       create_at: 1,
       update_at: 1,
     }).sort({create_at: -1})
@@ -112,7 +114,7 @@ const articlesController = {
     }
     let time = new Date().getTime()
     // 插入数据
-    await articles.insertMany({
+    let result = await articles.insertMany({
       title: title,
       description: description,
       type: type,
@@ -122,14 +124,17 @@ const articlesController = {
       create_at: time,
       update_at: time,
       user: ctx.user_status.username,
-      user_id: ctx.user_status.id,
+      user_id: ctx.user_status._id,
       is_delete: 'NO'
     })
     // 响应信息
     ctx.body = {
       code: 0,
       status: 200,
-      message: 'complete'
+      message: 'complete',
+      data: {
+        article_id: result[0]._id
+      }
     }
   },
 
@@ -195,7 +200,7 @@ const articlesController = {
       // 资源不存在
       ctx.throw(404, 'resource is not exist')
     }
-    if (result.data.user_id !== ctx.user_status.id && ctx.user_status.type !== 'admin') {
+    if (result.data.user_id !== ctx.user_status._id && ctx.user_status.type !== 'admin') {
       // 此用户不是管理员，且不是文章的发布者
       ctx.throw(401, 'you do not have the access permission')
     } else {
