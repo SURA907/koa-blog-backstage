@@ -5,12 +5,12 @@
 const router = require('koa-router')()
 
 // 引入controller
-const articles = require('./../controller/article')
-const users = require('./../controller/users')
-const mail = require('./../controller/mail')
+const articles = require('../controllers/articles')
+const users = require('../controllers/users')
+const mail = require('../controllers/mails')
 
 // 鉴权中间件
-const accessPermission = require('./../tools/accessPermission')
+const accessPermission = require('../middlewares/accessPermission')
 
 /**
  * reast api

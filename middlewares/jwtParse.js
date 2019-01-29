@@ -7,11 +7,11 @@
  */
 const fs = require('fs')
 const jwt = require('jsonwebtoken')
-const user = require('./../model/model').getModel('user')
-const findResource = require('./../tools/findResource')
-const redis_client = require('./../tools/redis')
+const user = require('../model/model').getModel('user')
+const findResource = require('../tools/findResource')
+const redis_client = require('../tools/redis')
 
-const PRIVATE_KEY_PATH = require('./../config').TOKEN_KEY.PRIVATE_KEY
+const PRIVATE_KEY_PATH = require('../config').TOKEN_KEY.PRIVATE_KEY
 const PRIVATE_KEY = fs.readFileSync(PRIVATE_KEY_PATH)
 
 

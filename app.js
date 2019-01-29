@@ -9,11 +9,11 @@ const helmet = require('koa-helmet')
 
 // 自定义模块
 const ownRoutes = require('./routes/index')
-const errorHandle = require('./tools/errorHandle')
-const logHanele = require('./tools/log')
-const resourceSharing = require('./tools/resourceSharing')
+const errorHandle = require('./middlewares/errorHandle')
+const logHanele = require('./middlewares/log')
+const resourceSharing = require('./middlewares/resourceSharing')
 const jwt_config = require('./tools/jwtConfig')
-const jwt_parse = require('./tools/jwtParse')
+const jwt_parse = require('./middlewares/jwtParse')
 
 // 实例化Koa
 const app = new Koa()
