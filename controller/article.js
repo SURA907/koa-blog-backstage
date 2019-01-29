@@ -160,12 +160,12 @@ const articlesController = {
       ctx.throw(400, 'bad request, check args')
     }
     // 寻找资源
-    let result = await findResource(articles, redis_client, article_id, 'article')
+    let result = await findResource(articles, redis_client, id, 'article')
     if (result === null) {
       // 资源不存在
       ctx.throw(404, 'resource is not exist')
     }
-    if (result.data.user_id !== ctx.user_status.id) {
+    if (result.data.user_id !== ctx.user_status._id) {
       // 此用户不是文章的发布者
       ctx.throw(401, 'you do not have the access permission')
     } else {

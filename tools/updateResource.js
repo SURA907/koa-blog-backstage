@@ -35,15 +35,21 @@ async function mongo_update (model, id, update_message) {
 // 删除redis中的数据和锁
 // 若以上两步出现错误，则一直自旋，直至删除完成
 async function redis_delete (redis_client, key, lock_key) {
+  /**
+   * KEYS[1]: key
+   * KEYS[2]: lock_key
+   */
   let lus = `do
-    redis.call('del', '${key}')
-    redis.call('del', '${lock_key}')
+    redis.call('del', KEYS[1])
+    redis.call('del', KEYS[2])
     return 1
   end`
-  redis_client.evalAsync(lus, 0).then(res => {
-    return true
-  }).cache(err => {
-    return redis_delete(redis_client, key, lock_key)
+  redis_client.eval(lus, 2, ...[key, lock_key], (err, res) => {
+    if (err) {
+      return redis_delete(redis_client, key, lock_key)
+    } else {
+      return true
+    }
   })
 }
 

@@ -57,20 +57,6 @@ const user_controller = {
     }
   },
 
-  // 用户登出
-  async signout (ctx, next) {
-    // 签发立即过期的token
-    ctx.body = {
-      code: 0,
-      status: 200,
-      message: 'complete',
-      token: jwt.sign({
-        data: null,
-        exp: 0
-      }, PUBLIC_KEY, {algorithm: 'RS256'})
-    }
-  },
-
   // 用户注册
   async signup (ctx, next) {
     // 接收并格式化参数
@@ -128,9 +114,10 @@ const user_controller = {
       code: 0,
       status: 200,
       data: {
+        id: ctx.user_status._id,
+        type: ctx.user_status.type,
         username: ctx.user_status.username,
         avatar: ctx.user_status.avatar,
-        type: ctx.user_status.type
       }
     }
   },
