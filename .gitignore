@@ -9,3 +9,6 @@ config.js
 
 # vscode config
 .vscode
+
+# idea config
+.idea
