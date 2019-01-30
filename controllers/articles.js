@@ -4,7 +4,7 @@
  */
 // 引入资源查找模块
 const findResource = require('./../tools/findResource')
-// 一如资源更新模块
+// 引入资源更新模块
 const updateResource = require('./../tools/updateResource')
 // 引入model
 const articles = require('./../model/model').getModel('articles')
@@ -133,7 +133,7 @@ const articlesController = {
       status: 200,
       message: 'complete',
       data: {
-        article_id: result[0]._id
+        _id: result[0]._id
       }
     }
   },
