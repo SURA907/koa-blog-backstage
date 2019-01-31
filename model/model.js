@@ -41,8 +41,8 @@ const userSchema = new mongoose.Schema({
   password: {type: String},
   avatar: {type: String, default: 'null'},
   mail: {type: String, indexes: true},
-  create_at: {type: String},
-  update_at: {type: String},
+  create_at: {type: Number},
+  update_at: {type: Number},
   type: {type: String},
   is_delete: {type: String, march: /(^YES$|^NO$)/, default: 'NO'}
 })
@@ -89,9 +89,9 @@ const articleModel = mongoose.model('articles', articleSchema)
 const commentSchema = new mongoose.Schema({
   article_id: {type: String, indexes: true},
   content: {type: String},
-  parents: {type: String},
-  create_at: {type: String},
-  update_at: {type: String},
+  parents: {type: Object},
+  create_at: {type: Number},
+  update_at: {type: Number},
   user: {type: String},
   user_id: {type: String, indexes: true},
   is_delete: {type: String, march: /(^YES$|^NO$)/, default: 'NO'}

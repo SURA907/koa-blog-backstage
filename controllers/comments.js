@@ -13,7 +13,7 @@ const redis_client = require('../tools/redis')
 const commentsController = {
   // 根据动态路由id获取对应文章的评论
   async get_comments_by_article_id (ctx, next) {
-    let article_id = ctx.params.id || ''
+    let article_id = ctx.query.article_id || ''
     article_id = article_id.trim()
     // 参数不合法
     if (article_id.length !== 24) {
@@ -21,14 +21,14 @@ const commentsController = {
     }
     // 检查相关文章是否存在
     let result_article = await findResource(articles, redis_client, article_id, 'article')
-    if (result === null) {
+    if (result_article === null) {
       ctx.throw(404, 'the article is not exist, so can not get comments')
     }
     // 查找文章评论
-    let result_comments = comments.find({
+    let result_comments = await comments.find({
       article_id: article_id,
       is_delete: 'NO'
-    })
+    }).sort({create_at: -1})
     ctx.body = {
       code: 0,
       status: 200,
@@ -37,22 +37,21 @@ const commentsController = {
     }
   },
   
-  // 插入评论
+  // 创建评论
   async create (ctx, next) {
     // 接受并校验参数
-    let article_id = ctx.params.id || ''
+    let article_id = ctx.query.article_id || ''
     let content = ctx.request.body.content || ''
-    let parents = ctx.request.body.parents || ''
+    let parents = ctx.request.body.parents || {}
     article_id = article_id.trim()
     content = content.trim()
-    parents = parents.trim()
-    if (article_id.length !== 24 || content.length === 0 || parents.length === 0) {
+    if (article_id.length !== 24 || content.length === 0) {
       ctx.throw(400, 'bad request, check args')
     }
     let time = new Date().getTime()
     // 检查文章是否存在
     let result_article = await findResource(articles, redis_client, article_id, 'article')
-    if (result === null) {
+    if (result_article === null) {
       ctx.throw(404, 'the article is not exist, so can not create comments')
     }
     // 插入评论
@@ -72,12 +71,12 @@ const commentsController = {
       message: 'complete',
       data: {
         _id: result_comment[0]._id,
-        create_at: result_comment[0].create_at,
+        create_at: result_comment[0].create_at
       }
     }
   },
 
-  // 删除文章
+  // 删除评论
   async delete (ctx, next) {
     // 获取并格式化参数
     let comment_id = ctx.params.id || ''
@@ -95,7 +94,7 @@ const commentsController = {
       ctx.throw(404, 'this comment is not exist')
     } else if (result_comment[0].user_id !== ctx.user_status._id) {
       // 当前用户不是评论创建者
-      ctx.throw(401, 'you is not the creater of this comment')
+      ctx.throw(401, 'you are not the creater of this comment')
     }
     // 将is_delete字段设置为'YES'
     await comments.updateOne({

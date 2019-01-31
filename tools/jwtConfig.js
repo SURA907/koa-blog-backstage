@@ -11,7 +11,8 @@ const public_path = [
   /^\/articles/,
   /^\/users\/signin$/,
   /^\/users$/,
-  /^\/mail\/signup$/
+  /^\/mail\/signup$/,
+  /^\/comments/,
 ]
 
 // 解密密匙

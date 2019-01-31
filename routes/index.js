@@ -7,7 +7,8 @@ const router = require('koa-router')()
 // 引入controller
 const articles = require('../controllers/articles')
 const users = require('../controllers/users')
-const mail = require('../controllers/mails')
+const mails = require('../controllers/mails')
+const comments = require('../controllers/comments')
 
 // 鉴权中间件
 const accessPermission = require('../middlewares/accessPermission')
@@ -20,12 +21,14 @@ const accessPermission = require('../middlewares/accessPermission')
 router.get('/articles', articles.get_index)
 // 根据文章唯一标识符获取文章
 router.get('/articles/:id', articles.find)
+// 根据获取文章id获取文章对应所有评论
+router.get('/comments', comments.get_comments_by_article_id)
 // 用户登录
 router.post('/users/signin', users.signin)
 // 用户注册
 router.post('/users', users.signup)
 // 发送用户注册邮件
-router.post('/mail/signup', mail.signup)
+router.post('/mail/signup', mails.signup)
 
 // need login
 router.all('*', accessPermission.isSignin)
@@ -38,6 +41,10 @@ router.post('/articles', articles.create_article)
 router.put('/articles/:id', articles.update_article)
 // 删除文章
 router.delete('/articles/:id', articles.delete_article)
+// 增加评论
+router.post('/comments', comments.create)
+// 删除评论
+router.delete('/comments/:id', comments.delete)
 // 根据token获取当前用户公开信息（用户名、头像等）
 router.get('/users/public', users.public)
 // 修改密码
