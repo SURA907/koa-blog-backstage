@@ -33,7 +33,7 @@ async function reset_redis(redis_client, key) {
 async function redis_lock(redis_client, lock_key, lock_id) {
   // 上锁
   // 参数'NX'保证一次最多只有一个线程set成功
-  let is_lock = await redis_client.setAsync(lock_key, lock_id, 'NX', 'PX', 200)
+  let is_lock = await redis_client.setAsync(lock_key, lock_id, 'NX', 'PX', 300)
   return is_lock === 'OK'
 }
 
@@ -69,6 +69,7 @@ async function redis_unlock(redis_client, lock_key, lock_id, key, data) {
       return -1
     end`
   let result = await redis_client.evalAsync(script, 2, ...[lock_key, key, lock_id, data])
+  // console.log(result)
   return result
 }
 
