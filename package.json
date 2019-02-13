@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "websocket": "cd lib/chatroom && node index.js",
+    "http": "node bin/server.js &",
+    "websocket": "cd lib/chatroom && node index.js &",
     "start": "node bin/server.js"
   },
   "repository": {
@@ -26,6 +27,7 @@
     "koa-helmet": "^4.0.0",
     "koa-jwt": "^3.5.1",
     "koa-router": "^7.4.0",
+    "koa-static": "^5.0.0",
     "mongoose": "^5.3.13",
     "nodemailer": "^4.7.0",
     "redis": "^2.8.0",

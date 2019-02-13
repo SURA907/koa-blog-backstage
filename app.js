@@ -6,6 +6,7 @@ const Koa = require('koa')
 const router = require('koa-router')()
 const bodyParser = require('koa-bodyparser')
 const helmet = require('koa-helmet')
+const static = require('koa-static')
 
 // 自定义模块
 const ownRoutes = require('./routes/index')
@@ -27,6 +28,7 @@ app
   .use(errorHandle)
   .use(logHanele)
   .use(resourceSharing)
+  .use(static(__dirname+'/public'))
   .use(jwt_config)
   .use(bodyParser())
   .use(router.routes())
