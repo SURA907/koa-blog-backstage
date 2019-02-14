@@ -3,7 +3,7 @@
  */
 const koa_jwt = require('koa-jwt')
 const fs = require('fs')
-const PRIVATE_KEY_PATH = require('./../config').TOKEN_KEY.PRIVATE_KEY
+const PRIVATE_KEY = require('./../config').TOKEN_KEY.PRIVATE_KEY
 
 
 // 不需要token就可以访问的url
@@ -14,9 +14,6 @@ const public_path = [
   /^\/mail\/signup$/,
   /^\/comments/,
 ]
-
-// 解密密匙
-const PRIVATE_KEY = fs.readFileSync(PRIVATE_KEY_PATH)
 
 const jwt_config = koa_jwt({
   secret: PRIVATE_KEY

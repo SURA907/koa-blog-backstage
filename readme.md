@@ -5,6 +5,23 @@
 > 实际入口文件为：bin/server.js
 ---
 
+- ## 技术选型
+> web框架：koa</br>
+>> express之后的下一代web框架
+>
+> 数据库：mongodb</br>
+>> 文档型nosql</br>
+>
+> 缓存：redis</br>
+>> key value型nosql</br>
+>> 对文章和用户数据进行缓存，减少磁盘访问</br>
+>> 使用setNX实现分布式锁防止雪崩问题</br>
+>
+> 即时通信：socket.io</br>
+>> 面向实时 web 应用的 JavaScript 库，主要使用websocket协议，实现即时通讯十分方便
+> 
+---
+
 - ## push日志
 记录一下开发过程
 > - ### 2019-02-13

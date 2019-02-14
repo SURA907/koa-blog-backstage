@@ -7,10 +7,7 @@ const user = require('./../model/model').getModel('user')
 const hash = require('./../tools/hash')
 const redis_client = require('./../tools/redis')
 
-
-const PUBLIC_KEY_PATH = require('./../config').TOKEN_KEY.PUBLIC_KEY
-
-const PUBLIC_KEY = fs.readFileSync(PUBLIC_KEY_PATH)
+const PUBLIC_KEY = require('./../config').TOKEN_KEY.PUBLIC_KEY
 
 const user_controller = {
   

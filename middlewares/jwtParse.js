@@ -11,9 +11,7 @@ const user = require('../model/model').getModel('user')
 const findResource = require('../tools/findResource')
 const redis_client = require('../tools/redis')
 
-const PRIVATE_KEY_PATH = require('../config').TOKEN_KEY.PRIVATE_KEY
-const PRIVATE_KEY = fs.readFileSync(PRIVATE_KEY_PATH)
-
+const PRIVATE_KEY = require('../config').TOKEN_KEY.PRIVATE_KEY
 
 async function token_parse(ctx, next) {
   let token = ctx.request.header.authorization
