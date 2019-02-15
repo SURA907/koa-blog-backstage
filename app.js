@@ -11,10 +11,9 @@ const static = require('koa-static')
 // 自定义模块
 const ownRoutes = require('./routes/index')
 const errorHandle = require('./middlewares/errorHandle')
-const logHanele = require('./middlewares/log')
 const resourceSharing = require('./middlewares/resourceSharing')
 const jwt_config = require('./tools/jwtConfig')
-const jwt_parse = require('./middlewares/jwtParse')
+const logger = require('./tools/logger')
 
 // 实例化Koa
 const app = new Koa()
@@ -26,7 +25,7 @@ router.use(ownRoutes)
 app
   .use(helmet())
   .use(errorHandle)
-  .use(logHanele)
+  .use(logger())
   .use(resourceSharing)
   .use(static(__dirname+'/public'))
   .use(jwt_config)
