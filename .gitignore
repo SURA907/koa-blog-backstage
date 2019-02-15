@@ -1,6 +1,9 @@
 # node_modules
 node_modules
 
+# logs
+logs
+
 # zip
 koa-blog-backstage.zip
 
