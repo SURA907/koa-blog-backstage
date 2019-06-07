@@ -19,5 +19,5 @@ config.js
 # idea config
 .idea
 
-# static resource
+# front-end static resource
 public
