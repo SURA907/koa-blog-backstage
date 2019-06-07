@@ -107,6 +107,8 @@ const user_controller = {
 
   /* 根据用户id获取用户公开信息（用户名，头像等）*/
   async public (ctx, next) {
+    await accessPermission.isSignin(ctx, next)
+
     ctx.body = {
       code: 0,
       status: 200,
@@ -121,7 +123,9 @@ const user_controller = {
 
   // 修改密码
   async change_password (ctx, next) {
-
+    await accessPermission.isSignin(ctx, next)
+    // to do something
+    // ...
   }
 }
 

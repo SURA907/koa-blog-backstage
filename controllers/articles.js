@@ -10,6 +10,8 @@ const updateResource = require('./../tools/updateResource')
 const articles = require('./../model/model').getModel('articles')
 // 引入redis
 const redis_client = require('./../tools/redis')
+// 鉴权中间件
+const accessPermission = require('../middlewares/accessPermission')
 
 const articlesController = {
 
@@ -71,6 +73,8 @@ const articlesController = {
 
   // 返回当前用户创建的所有文章
   async own_articles (ctx, next) {
+    await accessPermission.isSignin(ctx, next)
+
     let result = await articles.find({
       user_id: ctx.user_status._id,
       is_delete: 'NO'
@@ -95,6 +99,8 @@ const articlesController = {
 
   // 添加文章
   async create_article (ctx, next) {
+    await accessPermission.isSignin(ctx, next)
+
     // 接收并检查参数
     let title = ctx.request.body.title || ''
     let description = ctx.request.body.description || ''
@@ -140,6 +146,7 @@ const articlesController = {
 
   // 更新文章
   async update_article (ctx, next) {
+    await accessPermission.isSignin(ctx, next)
     // 接收并检查参数
     let id = ctx.params.id || ''
     let title = ctx.request.body.title || ''
@@ -188,6 +195,8 @@ const articlesController = {
 
   // 删除文章
   async delete_article (ctx, next) {
+    await accessPermission.isSignin(ctx, next)
+    
     // 接收并检查参数
     let id = ctx.params.id || ''
     id = id.trim()

@@ -9,6 +9,8 @@ const ObjectId = require('mongoose').Types.ObjectId
 const findResource = require('../tools/findResource')
 // redis
 const redis_client = require('../tools/redis')
+// 鉴权中间件
+const accessPermission = require('../middlewares/accessPermission')
 
 const commentsController = {
   // 根据动态路由id获取对应文章的评论
@@ -39,6 +41,8 @@ const commentsController = {
   
   // 创建评论
   async create (ctx, next) {
+    await accessPermission.isSignin(ctx, next)
+
     // 接受并校验参数
     let article_id = ctx.query.article_id || ''
     let content = ctx.request.body.content || ''
@@ -78,6 +82,8 @@ const commentsController = {
 
   // 删除评论
   async delete (ctx, next) {
+    await accessPermission.isSignin(ctx, next)
+    
     // 获取并格式化参数
     let comment_id = ctx.params.id || ''
     comment_id = comment_id.trim()
