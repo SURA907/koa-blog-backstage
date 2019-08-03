@@ -20,4 +20,4 @@ config.js
 .idea
 
 # front-end static resource
-public
+public/*
