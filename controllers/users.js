@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken')
 const user = require('./../model/model').getModel('user')
 const hash = require('./../tools/hash')
 const redis_client = require('./../tools/redis')
-
+const accessPermission = require('../middlewares/accessPermission')
 const PUBLIC_KEY = require('./../config').TOKEN_KEY.PUBLIC_KEY
 
 const user_controller = {
