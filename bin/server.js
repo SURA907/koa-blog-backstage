@@ -29,7 +29,7 @@ function execute() {
 function init_http_server() {
   // 创建 http server
   const server = http.createServer(app)
-  server.listen(HTTP_PORT)
+  server.listen(HTTP_PORT, '127.0.0.1')
   return server
 }
 
